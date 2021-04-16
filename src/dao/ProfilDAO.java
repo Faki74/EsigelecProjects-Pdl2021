@@ -18,15 +18,18 @@ public class ProfilDAO extends ConnectionDAO {
 	public ProfilDAO() {
 		super();
 	}
-	public int add(Card card) {
+	public int add(Profil profil) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		int returnValue = 0;
 		//Connection à la base de données
 		try {
 			con=DriverManager.getConnection(URL, LOGIN, PASS);
-			ps=con.prepareStatement("insert into cardLeo_card values(idgenerate('Leo'||CARD_SEQ.nextval,'cardLeo_card',1),?,1)");
-			ps.setString(1, card.getCardUsrId());
+			ps=con.prepareStatement("insert into profil_pfl values(?,?,?,?)");
+			ps.setString(1, profil.getPflId());
+			ps.setString(2, profil.getPflDesc());
+			ps.setString(3, profil.getPflPlace().getPlcId());
+			ps.setString(4, profil.getPflHoraire().getHrId());
 			returnValue=ps.executeUpdate();
 		} catch (Exception e) {
 			if (e.getMessage().contains("ORA-00001"))
@@ -50,19 +53,22 @@ public class ProfilDAO extends ConnectionDAO {
 		}
 		return returnValue;
 	}
-	public int update(Card card) {
+	public int update(Profil oldProfil,Profil newProfil) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		int returnValue = 0;
 		try {
 			con = DriverManager.getConnection(URL, LOGIN, PASS);
-			ps = con.prepareStatement("UPDATE cardLeo_card set card_usr_status = ? WHERE card_id = ?");
-			ps.setInt(1, card.getCardStatus());
-			ps.setString(2, card.getCardId());
-
+			ps = con.prepareStatement("UPDATE profil_pfl set pfl_id = ?,pfl_description = ?,pfl_plc_id = ?,pfl_hr_id =? WHERE pfl_id = ?,pfl_plc_id = ?,pfl_hr_id = ?");
+			ps.setString(1, newProfil.getPflId());
+			ps.setString(2, newProfil.getPflDesc());
+			ps.setString(3, newProfil.getPflPlace().getPlcId());
+			ps.setString(4, newProfil.getPflHoraire().getHrId());
+			ps.setString(5, oldProfil.getPflId());
+			ps.setString(6, oldProfil.getPflPlace().getPlcId());
+			ps.setString(7, oldProfil.getPflHoraire().getHrId());
 			// Execution de la requete
 			returnValue = ps.executeUpdate();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -82,7 +88,7 @@ public class ProfilDAO extends ConnectionDAO {
 		}
 		return returnValue;
 	}
-	public int delete(Card card) {
+	public int delete(Profil profil) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		int returnValue = 0;
@@ -90,12 +96,12 @@ public class ProfilDAO extends ConnectionDAO {
 		// connexion a la base de donnees
 		try {
 			con = DriverManager.getConnection(URL, LOGIN, PASS);
-			ps = con.prepareStatement("DELETE FROM cardleo_card WHERE card_id = ?");
-			ps.setString(1, card.getCardId());
-
+			ps = con.prepareStatement("DELETE FROM profil_pfl WHERE pfl_id = ?,pfl_plc_id = ?,pfl_hr_id = ?");
+			ps.setString(1, profil.getPflId());
+			ps.setString(2, profil.getPflPlace().getPlcId());
+			ps.setString(3, profil.getPflHoraire().getHrId());
 			// Execution de la requete
 			returnValue = ps.executeUpdate();
-
 		} catch (Exception e) {
 			if (e.getMessage().contains("ORA-02292"))
 				System.out.println("Suppression Impossibe. Supprimer d'abord tuples associés");
@@ -118,24 +124,21 @@ public class ProfilDAO extends ConnectionDAO {
 		}
 		return returnValue;
 	}
+	/**
+	 * Get results from table PROFIL
+	 * @param id
+	 * @return
+	 */
 	public ResultSet getRSet(String id) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Profil returnValue = null;
-
 		// connexion a la base de donnees
 		try {
-
 			con = DriverManager.getConnection(URL, LOGIN, PASS);
-			if(id.matches("^[0-9]+$")) {
-				ps = con.prepareStatement("SELECT * FROM profil_pfl WHERE pfl_id = ?");
-				ps.setInt(1, Integer.parseInt(id) );
-			}else {
-				ps = con.prepareStatement("SELECT * FROM profil_pfl WHERE lower(concat(pfl_description,pfl_plc_id)) like ?");
-				ps.setString(1, new String("%"+id+"%").toLowerCase() );
-			}
-
+			ps = con.prepareStatement("SELECT * FROM profil_pfl WHERE lower(concat(pfl_id,concat(pfl_plc_id,pfl_hr_id))) like ?");
+			ps.setString(1, new String("%"+id+"%").toLowerCase());
 			//Exécution de la requête
 			rs = ps.executeQuery();
 		} catch (Exception ee) {
@@ -146,13 +149,20 @@ public class ProfilDAO extends ConnectionDAO {
 	/*
 	 * Attention JUSTE POUR LES TESTS, A NORMALISER
 	 */
-	public Profil get(String id) {
+	/**
+	 * Get a tuple from a given id 
+	 * @param id
+	 * @return
+	 */
+	public ArrayList<Profil> get(String id) {
 		ResultSet rs = getRSet(id);
-		Profil returnValue = null;
+		ArrayList<Profil> returnValue = null;
 		try {
+			returnValue = new ArrayList<Profil>();
 			while (rs.next()) {
-				returnValue = new Profil(rs.getString("pfl_id"),
-						rs.getString("pfl_description"),null,null);
+				returnValue.add(new Profil(rs.getString("pfl_id"),rs.getString("pfl_description"),
+						new PlaceDAO().get(rs.getString("pfl_plc_id")),
+						new HoraireDAO().get(rs.getString("pfl_hr_id"))));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -160,11 +170,10 @@ public class ProfilDAO extends ConnectionDAO {
 		}
 		return returnValue;
 	}
-
 	/**
-	 * Permet de recuperer tous les fournisseurs stockes dans la table fournisseur
+	 * Permet de recuperer tous les profils dans la table PROFIL
 	 * 
-	 * @return une ArrayList de fournisseur
+	 * @return une 
 	 */
 	public TableModel searchProfil(String searchKey) {
 		Connection con = null;
@@ -202,6 +211,6 @@ public class ProfilDAO extends ConnectionDAO {
 		TableModel tbm= super.viewResults(tableKey);
 		return tbm;
 	}
-	
+
 
 }

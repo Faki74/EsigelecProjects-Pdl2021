@@ -1,16 +1,9 @@
 package dao;
-import net.proteanit.sql.DbUtils;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Vector;
-
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import model.*;
-import gui.AdminFrame;
 public class AccesDAO extends ConnectionDAO {
 	/**
 	 * Constructor
@@ -28,7 +21,7 @@ public class AccesDAO extends ConnectionDAO {
 			ps=con.prepareStatement("insert into acces_acs values(idgenerate(?,'acces_acs',1),?,?,?)");
 			ps.setString(1, acces.getAcsDesc());
 			ps.setString(2, acces.getAcsPlcId());
-			ps.setString(3, acces.getAcsTypeId());
+			ps.setInt(3, acces.getAcstype().getAcstypeId());
 			returnValue=ps.executeUpdate();
 		} catch (Exception e) {
 			if (e.getMessage().contains("ORA-00001"))
@@ -61,7 +54,7 @@ public class AccesDAO extends ConnectionDAO {
 			ps = con.prepareStatement("UPDATE acces_acs set acs_description = ?, acs_plc_id = ?, acs_acstype_id = ? WHERE acs_id = ?");
 			ps.setString(1, acces.getAcsDesc());
 			ps.setString(2, acces.getAcsPlcId());
-			ps.setString(3, acces.getAcsTypeId());
+			ps.setInt(3, acces.getAcstype().getAcstypeId());
 			// Execution de la requete
 			returnValue = ps.executeUpdate();
 
@@ -131,14 +124,12 @@ public class AccesDAO extends ConnectionDAO {
 			con = DriverManager.getConnection(URL, LOGIN, PASS);
 			ps = con.prepareStatement("SELECT * FROM acces_acs WHERE acs_id = ?");
 			ps.setString(1, id);
-			
+
 			//Exécution de la requête
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				returnValue = new Acces(rs.getString("acs_id"),
-									       rs.getString("acs_desc"),
-									       rs.getString("acs_plc_id"),
-									       rs.getString("acs_acstype_id"));
+				returnValue = new Acces(rs.getString("acs_id"),rs.getString("acs_desc"),rs.getString("acs_plc_id"),
+						new TypeAccesDAO().get(rs.getString("acs_acstype_id")));
 			}
 		} catch (Exception ee) {
 			ee.printStackTrace();
@@ -185,7 +176,7 @@ public class AccesDAO extends ConnectionDAO {
 			// on execute la requete
 			rs = ps.executeQuery();
 			returnValue = net.proteanit.sql.DbUtils.resultSetToTableModel(rs);
-			
+
 		} catch (Exception ee) {
 			ee.printStackTrace();
 		} finally {

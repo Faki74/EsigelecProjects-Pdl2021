@@ -3,7 +3,6 @@ public class Horaire {
 	public Horaire(String hrId,String hrOpen,String hrClose) {
 		this.hrId=hrId;this.hrOpen=hrOpen;this.hrClose=hrClose;
 	}
-	private String hrId;
 	/**
 	 * @return the hrId
 	 */
@@ -40,6 +39,7 @@ public class Horaire {
 	public void setHrClose(String hrClose) {
 		this.hrClose = hrClose;
 	}
+	private String hrId;
 	private String hrOpen;
 	private String hrClose;
 }

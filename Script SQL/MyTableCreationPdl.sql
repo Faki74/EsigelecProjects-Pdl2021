@@ -41,7 +41,7 @@ commit;
 DROP TABLE userprofil_usrpfl; DROP TABLE profil_pfl;
 DROP TABLE cardLeo_card;DROP TABLE user_usr;
 DROP TABLE acces_acs; DROP TABLE type_acces_acstype; DROP TABLE place_plc;
-DROP TABLE horaire_hr; 
+DROP TABLE horaire_hr;
 --drop function idgenerate;
 --*/
 --/*

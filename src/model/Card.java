@@ -38,6 +38,7 @@ public class Card {
 	}
 	/**
 	 * @return the cardStatus
+	 * 0 for disabled 1 for enabled
 	 */
 	public int getCardStatus() {
 		return cardStatus;

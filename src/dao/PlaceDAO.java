@@ -1,16 +1,9 @@
 package dao;
-import net.proteanit.sql.DbUtils;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Vector;
-
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import model.*;
-import gui.AdminFrame;
 
 public class PlaceDAO extends ConnectionDAO{
 	/**
@@ -29,7 +22,7 @@ public class PlaceDAO extends ConnectionDAO{
 			ps=con.prepareStatement("insert into place_plc values(idgenerate(?,'Place_plc',1),?,?,?,?)");
 			ps.setString(1, place.getPlcLocation());
 			ps.setInt(2, place.getPlcNbAcces());
-			ps.setString(3, place.getPlcHrId());
+			ps.setString(3, place.getPlcHoraire().getHrId());
 			ps.setInt(4, place.getPlcStatus());
 			returnValue=ps.executeUpdate();
 		} catch (Exception e) {
@@ -63,7 +56,7 @@ public class PlaceDAO extends ConnectionDAO{
 			ps = con.prepareStatement("UPDATE place_plc set plc_location = ?, plc_nbacces = ?, plc_hr_id=?, plc_status = ? WHERE plc_id = ?");
 			ps.setString(1, place.getPlcLocation());
 			ps.setInt(2, place.getPlcNbAcces());
-			ps.setString(3, place.getPlcHrId());
+			ps.setString(3, place.getPlcHoraire().getHrId());
 			ps.setInt(4, place.getPlcStatus());
 			// Execution de la requete
 			returnValue = ps.executeUpdate();
@@ -121,6 +114,11 @@ public class PlaceDAO extends ConnectionDAO{
 		}
 		return returnValue;
 	}
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public Place get(String id) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -133,15 +131,15 @@ public class PlaceDAO extends ConnectionDAO{
 			con = DriverManager.getConnection(URL, LOGIN, PASS);
 			ps = con.prepareStatement("SELECT * FROM place_plc WHERE plc_id = ?");
 			ps.setString(1, id);
-			
+
 			//Exécution de la requête
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				returnValue = new Place(rs.getString("plc_id"),
-									       rs.getString("plc_location"),
-									       rs.getInt("plc_nbacces"),
-									       rs.getString("plc_hr_id"),
-									       rs.getInt("plc_status"));
+						rs.getString("plc_location"),
+						rs.getInt("plc_nbacces"),
+						new HoraireDAO().get(rs.getString("plc_hr_id")),
+						rs.getInt("plc_status"));
 			}
 		} catch (Exception ee) {
 			ee.printStackTrace();
@@ -168,11 +166,59 @@ public class PlaceDAO extends ConnectionDAO{
 		}
 		return returnValue;
 	}
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public int getAcces(Place place) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int returnValue = 0;
 
+		// connexion a la base de donnees
+		try {
+
+			con = DriverManager.getConnection(URL, LOGIN, PASS);
+			ps = con.prepareStatement("SELECT acces_acs.* FROM place_plc INNER JOIN acces_acs on plc_id=acs_plc_id WHERE plc_id = ?");
+			ps.setString(1, place.getPlcId());
+
+			//Exécution de la requête
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				place.setPlcAcces(new Acces(rs.getString("acs_id"),rs.getString("acs_desc"),rs.getString("acs_plc_id"),
+						new TypeAccesDAO().get(rs.getString("acs_acstype_id"))));
+			}
+		} catch (Exception ee) {
+			ee.printStackTrace();
+		} finally {
+			// fermeture du ResultSet, du PreparedStatement et de la Connexion
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (Exception ignore) {
+			}
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+			} catch (Exception ignore) {
+			}
+			try {
+				if (con != null) {
+					con.close();
+				}
+			} catch (Exception ignore) {
+			}
+		}
+		return returnValue;
+	}
 	/**
 	 * Permet de recuperer tous les lieux de la table lieu
 	 * 
-	 * @return une ArrayList de lieu
+	 * @return une 
 	 */
 	public TableModel searchPlace(String searchKey) {
 		Connection con = null;
@@ -188,7 +234,7 @@ public class PlaceDAO extends ConnectionDAO{
 			// on execute la requete
 			rs = ps.executeQuery();
 			returnValue = net.proteanit.sql.DbUtils.resultSetToTableModel(rs);
-			
+
 		} catch (Exception ee) {
 			ee.printStackTrace();
 		} finally {

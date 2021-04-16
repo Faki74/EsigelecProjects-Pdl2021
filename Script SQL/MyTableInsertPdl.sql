@@ -61,9 +61,7 @@ insert into acces_acs values(idgenerate('Sortie Secours','acces_acs',0),'Acces A
 --******************Création des Profils************************
 insert into profil_pfl(pfl_id,pfl_plc_id,pfl_hr_id) values(idgenerate('Profil Administration','profil_pfl',0),'Direction','Horaire Accessible');
 insert into profil_pfl(pfl_id,pfl_plc_id,pfl_hr_id) values(idgenerate('Profil Etudiant','profil_pfl',0),'Amphi Charliat','Matinee');
-insert into profil_pfl(pfl_id,pfl_plc_id,pfl_hr_id) values(idgenerate('Profil Etudiant','profil_pfl',0),'Amphi Charliat','Apres-Midi');
 insert into profil_pfl(pfl_id,pfl_plc_id,pfl_hr_id) values(idgenerate('Profil Etudiant','profil_pfl',0),'Amphi Maxwell','Matinee');
-insert into profil_pfl(pfl_id,pfl_plc_id,pfl_hr_id) values(idgenerate('Profil Etudiant','profil_pfl',0),'Amphi Maxwell','Apres-Midi');
 insert into profil_pfl(pfl_id,pfl_plc_id,pfl_hr_id) values(idgenerate('Profil Commun','profil_pfl',0),'Parking','Horaire Accessible');
 ----------------------------------------------------------------
 --************************Affichage Tables**********************
@@ -100,3 +98,27 @@ insert into userprofil_usrpfl values(usrpfl_seq.nextval,'Profil Commun','olivier
 select * from userprofil_usrpfl;
 commit;
 ---------------------------------------------------------------*/
+/*@SuppressWarnings("serial")
+		public class GenBase2 extends JPanel{
+			public static void main(String[] args) {
+				GenBase2 panel = new GenBase2();
+				JFrame frame = new JFrame();
+				frame.setSize(new Dimension(1024,720));
+				frame.setContentPane(panel);
+				frame.pack();
+				frame.setVisible(true);
+
+			}
+			public GenBase2() {
+				setLayout(null);
+				setPreferredSize(new Dimension(897, 539));
+				setMinimumSize(new Dimension(768,576));
+				setSize(this.getPreferredSize());
+				JLabel lblNewLabel = new JLabel("",JLabel.CENTER);
+				lblNewLabel.setIcon(new ImageIcon(this.getClass().getResource("/images/adminBase2.png")));
+				lblNewLabel.setBounds(0, 0, 847, 529);
+				add(lblNewLabel);
+			}
+		}*/
+		//String imagesDir="images/";
+				//ImageIcon img=new ImageIcon(imagesDir+"adminBase.png");

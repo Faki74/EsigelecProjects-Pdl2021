@@ -13,13 +13,13 @@ public class Acces {
 	 * @param acsId
 	 * @param acsDesc
 	 * @param acsPlcId
-	 * @param acstypeId
+	 * @param acstype
 	 */
-	public Acces(String acsId, String acsDesc, String acsPlcId, String acsTypeId) {
+	public Acces(String acsId, String acsDesc, String acsPlcId, TypeAcces acstype) {
 		this.acsId = acsId;
 		this.acsDesc = acsDesc;
 		this.acsPlcId = acsPlcId;
-		this.acsTypeId=acsTypeId;
+		this.acstype = acstype;
 	}
 	/**
 	 * @return the acsId
@@ -58,19 +58,19 @@ public class Acces {
 		this.acsPlcId = acsPlcId;
 	}
 	/**
-	 * @return acsTypeId
+	 * @return the acstype
 	 */
-	public String getAcsTypeId() {
-		return acsTypeId;
+	public TypeAcces getAcstype() {
+		return acstype;
 	}
 	/**
-	 * @param a to set
+	 * @param acstype the acstype to set
 	 */
-	public void setAcsType(String acsTypeId) {
-		this.acsTypeId = acsTypeId;
+	public void setAcstype(TypeAcces acstype) {
+		this.acstype = acstype;
 	}
 	private String acsId;
 	private String acsDesc;
 	private String acsPlcId;
-	private String acsTypeId;
+	private TypeAcces acstype=null;
 }

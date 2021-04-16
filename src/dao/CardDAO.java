@@ -42,9 +42,27 @@ public class CardDAO extends ConnectionDAO {
 		int returnValue = 0;
 		try {
 			con = DriverManager.getConnection(URL, LOGIN, PASS);
-			ps = con.prepareStatement("UPDATE cardLeo_card set card_usr_status = ? WHERE card_id = ?");
+			ps = con.prepareStatement("UPDATE cardLeo_card set card_status = ? WHERE card_id = ?");
 			ps.setInt(1, card.getCardStatus());
 			ps.setString(2, card.getCardId());
+
+			// Execution de la requete
+			returnValue = ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return returnValue;
+	}
+	public int update(String idUser,int statusCard) {
+		Connection con = null;
+		PreparedStatement ps = null;
+		int returnValue = 0;
+		try {
+			con = DriverManager.getConnection(URL, LOGIN, PASS);
+			ps = con.prepareStatement("UPDATE cardLeo_card set card_status = ? WHERE card_usr_id = ?");
+			ps.setInt(1, statusCard);
+			ps.setString(2, idUser);
 
 			// Execution de la requete
 			returnValue = ps.executeUpdate();
@@ -86,7 +104,7 @@ public class CardDAO extends ConnectionDAO {
 		try {
 
 			con = DriverManager.getConnection(URL, LOGIN, PASS);
-			ps = con.prepareStatement("SELECT * FROM cardleo_card WHERE lower(concat(card_usr_id,card_id)) like ?");
+			ps = con.prepareStatement("SELECT * FROM cardleo_card WHERE lower(concat(card_usr_id,card_id)) like ? ORDER BY card_id");
 			ps.setString(1, new String("%"+id+"%").toLowerCase() );
 
 			//Exécution de la requête

@@ -3,6 +3,8 @@
  */
 package model;
 
+import java.util.ArrayList;
+
 /**
  * @author Idrissa
  *
@@ -101,10 +103,25 @@ public class User {
 	public void resetUsrCard() {
 		this.setUsrCard(null);
 	}
+	/**
+	 * @return the usrProfil
+	 */
+	public ArrayList<ArrayList<Profil>> getUsrProfil() {
+		return usrProfil;
+	}
+
+	/**
+	 * @param usrProfil the usrProfil to set
+	 */
+	public void setUsrProfil(ArrayList<ArrayList<Profil>> usrProfil) {
+		this.usrProfil = usrProfil;
+	}
 	private String usrId;
 	private String usrNom;
 	private String usrPrenom;
 	private String usrBirthday;
 	private String usrFonction;
 	private Card usrCard;
+	private ArrayList<ArrayList<Profil>> usrProfil;
+	
 }

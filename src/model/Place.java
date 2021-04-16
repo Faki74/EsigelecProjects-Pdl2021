@@ -10,15 +10,14 @@ public class Place {
 	 * @param plcId
 	 * @param plcLocation
 	 * @param plcNbAcces
-	 * @param plcHrId
+	 * @param horaire un seul horaire pas la liste
 	 * @param plcStatus
 	 */
-	public Place(String plcId, String plcLocation, int plcNbAcces, String plcHrId, int plcStatus) {
+	public Place(String plcId, String plcLocation, int plcNbAcces,Horaire horaire, int plcStatus) {
 		this.plcId = plcId;
 		this.plcLocation = plcLocation;
 		this.plcNbAcces = plcNbAcces;
-		this.plcHrId=plcHrId;
-		plcHoraire = new ArrayList<Horaire>();
+		this.plcHoraire = horaire;
 		this.plcStatus = plcStatus;
 	}
 	
@@ -59,45 +58,19 @@ public class Place {
 		this.plcNbAcces = plcNbAcces;
 	}
 	/**
-	 * @return the plcHrId
-	 */
-	public String getPlcHrId() {
-		return plcHrId;
-	}
-	/**
-	 * @param plcNbAcces the plcNbAcces to set
-	 */
-	public void setPlcHrId(String plcHrId) {
-		this.plcHrId = plcHrId;
-	}
-	/**
 	 * @return the plcHoraire
 	 */
-	public ArrayList<Horaire> getPlcHoraire() {
+	public Horaire getPlcHoraire() {
 		return plcHoraire;
 	}
+
 	/**
 	 * @param plcHoraire the plcHoraire to set
 	 */
-	public void setPlcHoraire(ArrayList<Horaire> plcHoraire) {
+	public void setPlcHoraire(Horaire plcHoraire) {
 		this.plcHoraire = plcHoraire;
 	}
-	/**
-	 * 
-	 * @param horaire
-	 */
-	public void addHoraire(Horaire horaire) {
-		if(!plcHoraire.contains(horaire))
-			plcHoraire.add(horaire);
-	}
-	/**
-	 * 
-	 * @param horaire
-	 */
-	public void removeHoraire(Horaire horaire) {
-		if(plcHoraire.contains(horaire))
-			plcHoraire.remove(horaire);
-	}
+
 	/**
 	 * @return the plcStatus
 	 */
@@ -127,6 +100,7 @@ public class Place {
 	 * @param acces to add
 	 */
 	public String setPlcAcces(Acces acces) {
+		 //Verifier que l'accès n'est pas déjà ajouté
 		if(plcAcces.size()<=plcNbAcces) {
 			this.plcAcces.add(acces);
 			return("Nouvel accès associé");
@@ -155,8 +129,7 @@ public class Place {
 	private String plcId;
 	private String plcLocation;
 	private int plcNbAcces;
-	private String  plcHrId;
-	private ArrayList<Horaire> plcHoraire = new ArrayList<Horaire>();
+	private Horaire plcHoraire;
 	private int plcStatus;
 	private ArrayList<Acces> plcAcces =new ArrayList<Acces>();
 }

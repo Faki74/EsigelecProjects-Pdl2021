@@ -8,11 +8,14 @@ public class Profil {
 	/**
 	 * @param pflId
 	 * @param pflDesc
+	 * @param pflPlace
+	 * @param pflHoraire
 	 */
-	public Profil(String pflId, String pflDesc, Place place, Horaire horaire) {
+	public Profil(String pflId, String pflDesc, Place pflPlace, Horaire pflHoraire) {
 		this.pflId = pflId;
 		this.pflDesc = pflDesc;
-		this.setCorrespondances(place, horaire);
+		this.pflPlace = pflPlace;
+		this.pflHoraire = pflHoraire;
 	}
 	/**
 	 * @return the pflId
@@ -39,38 +42,32 @@ public class Profil {
 		this.pflDesc = pflDesc;
 	}
 	/**
-	 * @return the correspondances
+	 * @return the pflPlace
 	 */
-	public ArrayList<placeXhoraire> getCorrespondances() {
-		return correspondances;
+	public Place getPflPlace() {
+		return pflPlace;
 	}
 	/**
-	 * @param correspondances the correspondances to set
+	 * @param pflPlace the pflPlace to set
 	 */
-	public void setCorrespondances(ArrayList<placeXhoraire> correspondances) {
-		this.correspondances = correspondances;
+	public void setPflPlace(Place pflPlace) {
+		this.pflPlace = pflPlace;
 	}
 	/**
-	 * 
-	 * @param place
-	 * @param horaire
-	 * @return
+	 * @return the pflHoraire
 	 */
-	public boolean setCorrespondances(Place place,Horaire horaire) {
-		Iterator<placeXhoraire> iter=correspondances.iterator();
-		placeXhoraire newpxh=new placeXhoraire(place, horaire);
-		while(iter.hasNext()) {
-			placeXhoraire pxh=iter.next();
-			if(pxh.equals(newpxh)) {
-				System.out.println("Cette correspondance existe déjà");
-				return false;
-			}
-		}
-		correspondances.add(newpxh);
-		return true;
+	public Horaire getPflHoraire() {
+		return pflHoraire;
+	}
+	/**
+	 * @param pflHoraire the pflHoraire to set
+	 */
+	public void setPflHoraire(Horaire pflHoraire) {
+		this.pflHoraire = pflHoraire;
 	}
 	private String pflId;
 	private String pflDesc;
-	private ArrayList<placeXhoraire> correspondances=new ArrayList<placeXhoraire>();
+	private Place pflPlace;
+	private Horaire pflHoraire;
 	
 }
